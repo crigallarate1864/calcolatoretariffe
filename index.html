@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatore CRI - Pro</title>
+    <title>Calcolatore CRI - Campi Vincolati</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        #map { height: 350px; border-radius: 12px; z-index: 1; border: 2px solid #e2e8f0; }
+        #map { height: 300px; border-radius: 12px; z-index: 1; border: 1px solid #ddd; }
         @media print { .no-print { display: none; } body { background: white; } }
-        .loading { opacity: 0.5; pointer-events: none; }
+        .tappa-box { border-left: 4px solid #ef4444; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+<body class="bg-slate-100 min-h-screen p-4">
 
-    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div class="bg-red-600 p-6 text-white flex justify-between items-center">
-            <h1 class="text-2xl font-black uppercase tracking-tighter">Calcolatore Trasporti 🚑</h1>
-            <div class="text-xs bg-white/20 px-3 py-1 rounded-full font-mono">Ver. 2.5 - OpenSource</div>
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        <div class="bg-red-600 p-5 text-white flex justify-between items-center">
+            <h1 class="text-xl font-bold uppercase tracking-tight">Calcolatore Trasporti 🚑</h1>
+            <span class="text-[10px] bg-white text-red-600 px-2 py-1 rounded font-bold uppercase">DGR XII/437</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="p-6 space-y-6 border-r border-gray-100">
-                <div class="grid grid-cols-2 gap-4">
+            <div class="p-6 space-y-6 border-r">
+                
+                <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
                     <div class="col-span-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase">Tipo Mezzo</label>
-                        <select id="mezzo" class="w-full border-b-2 p-2 outline-none focus:border-red-500">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Mezzo</label>
+                        <select id="mezzo" class="w-full bg-transparent border-b border-gray-300 p-1 outline-none focus:border-red-500">
                             <option value="amb">Ambulanza (2 Op.)</option>
                             <option value="pul">Pulmino (2 Op.)</option>
                             <option value="aut">Auto (1 Op.)</option>
@@ -33,51 +34,43 @@
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-gray-400 uppercase">Ambito</label>
-                        <select id="ambito" class="w-full border-b-2 p-2 outline-none focus:border-red-500">
+                        <select id="ambito" class="w-full bg-transparent border-b border-gray-300 p-1 outline-none focus:border-red-500">
                             <option value="piccolo">Comune < 150k</option>
-                            <option value="grande">Città > 150k</option>
+                            <option value="grande">Città > 150k / S. Raffaele</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-400 uppercase">Tratta</label>
-                        <select id="tipoViaggio" class="w-full border-b-2 p-2 outline-none focus:border-red-500">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Tipo</label>
+                        <select id="tipoViaggio" class="w-full bg-transparent border-b border-gray-300 p-1 outline-none focus:border-red-500">
                             <option value="singola">Sola Andata</option>
                             <option value="ar">Andata e Ritorno</option>
                         </select>
                     </div>
                 </div>
 
-                <hr>
-
-                <div>
-                    <h3 class="text-sm font-bold text-gray-700 mb-3">PUNTI DI TRASPORTO</h3>
-                    <div id="punti-container" class="space-y-3">
+                <div class="space-y-4">
+                    <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest">Percorso (Inserisci i dati)</h3>
+                    <div id="punti-container" class="space-y-6">
                         </div>
-                    <button onclick="aggiungiPunto()" class="mt-4 text-xs font-bold text-red-600 uppercase no-print">+ Aggiungi Tappa</button>
+                    <button onclick="aggiungiPunto()" class="no-print text-red-600 text-xs font-bold hover:underline">+ AGGIUNGI DESTINAZIONE</button>
                 </div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl space-y-3 no-print">
-                    <button id="btnCalcola" onclick="eseguiCalcolo()" class="w-full bg-red-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-red-700 transition transform active:scale-95">
-                        📍 CALCOLA PERCORSO E TARIFFE
-                    </button>
-                </div>
+                <button onclick="eseguiCalcolo()" class="no-print w-full bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-red-700 transition">
+                    📍 CALCOLA PERCORSO E PREZZO
+                </button>
             </div>
 
-            <div class="p-6 bg-slate-50 flex flex-col h-full">
+            <div class="p-6 bg-slate-50 flex flex-col justify-between">
                 <div id="map" class="no-print mb-6"></div>
 
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 mt-auto text-center">
-                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2">Totale Preventivo</p>
-                    <div id="totaleDisplay" class="text-6xl font-black text-gray-900 tracking-tighter mb-4">€ 0,00</div>
+                <div class="bg-white p-6 rounded-2xl shadow-inner border text-center">
+                    <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">Totale Stimato</p>
+                    <div id="totaleDisplay" class="text-6xl font-black text-gray-900 mb-2">€ 0,00</div>
+                    <div id="kmDisplay" class="text-red-600 font-bold text-sm mb-6 uppercase tracking-tighter">0.0 km rilevati</div>
                     
-                    <div class="flex justify-center gap-4 text-sm mb-6">
-                        <div class="bg-red-50 text-red-600 px-4 py-1 rounded-full font-bold" id="kmDisplay">0.0 km</div>
-                        <div class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full font-bold">DGR XII/437</div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 no-print">
-                        <button onclick="window.print()" class="bg-gray-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Stampa PDF</button>
-                        <button onclick="location.reload()" class="border border-gray-300 py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Nuovo</button>
+                    <div class="flex gap-2 no-print">
+                        <button onclick="window.print()" class="flex-1 bg-gray-800 text-white py-3 rounded-lg font-bold text-xs uppercase">Stampa</button>
+                        <button onclick="location.reload()" class="flex-1 border py-3 rounded-lg font-bold text-xs uppercase text-gray-400">Reset</button>
                     </div>
                 </div>
             </div>
@@ -102,40 +95,64 @@
         function aggiungiPunto() {
             const id = Date.now();
             const container = document.getElementById('punti-container');
+            const num = punti.length + 1;
             const div = document.createElement('div');
-            div.className = "flex gap-2 items-center bg-white border p-3 rounded-xl shadow-sm";
+            div.className = "tappa-box bg-white p-4 rounded-lg shadow-sm space-y-3 relative";
             div.innerHTML = `
-                <div class="text-xs font-bold text-gray-300">${punti.length + 1}</div>
-                <input type="text" id="input-${id}" placeholder="Via, Città..." class="flex-grow outline-none text-sm font-medium">
-                ${punti.length > 1 ? `<button onclick="this.parentElement.remove(); punti=punti.filter(p=>p.id!==${id});" class="text-red-300 hover:text-red-500">✕</button>` : ''}
+                <div class="text-[10px] font-bold text-red-600 uppercase mb-2 italic underline">${num === 1 ? 'Partenza (Sede/Paziente)' : 'Destinazione'}</div>
+                <div class="grid grid-cols-4 gap-2">
+                    <input type="text" id="city-${id}" placeholder="Città" class="col-span-2 border-b p-1 text-sm outline-none focus:border-red-500">
+                    <input type="text" id="street-${id}" placeholder="Via/Piazza" class="col-span-1 border-b p-1 text-sm outline-none focus:border-red-500">
+                    <input type="text" id="civic-${id}" placeholder="Civ." class="col-span-1 border-b p-1 text-sm outline-none focus:border-red-500 text-center">
+                </div>
+                ${punti.length > 1 ? `<button onclick="rimuoviPunto(${id}, this.parentElement)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500">✕</button>` : ''}
             `;
             container.appendChild(div);
             punti.push({ id, coords: null });
         }
 
-        async function eseguiCalcolo() {
-            const btn = document.getElementById('btnCalcola');
-            btn.innerText = "RICERCA IN CORSO...";
-            btn.classList.add('loading');
+        function rimuoviPunto(id, el) {
+            el.remove();
+            punti = punti.filter(p => p.id !== id);
+        }
 
-            // 1. Geocodifica tutti gli indirizzi inseriti
+        async function eseguiCalcolo() {
+            let errorFound = false;
+            
+            // Per ogni punto, costruiamo la stringa e cerchiamo le coordinate
             for (let p of punti) {
-                const val = document.getElementById(`input-${p.id}`).value;
-                if (val && !p.coords) {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}`);
+                const city = document.getElementById(`city-${p.id}`).value;
+                const street = document.getElementById(`street-${p.id}`).value;
+                const civic = document.getElementById(`civic-${p.id}`).value;
+
+                if (!city || !street) {
+                    alert("Città e Via sono obbligatori per ogni tappa!");
+                    return;
+                }
+
+                // Costruiamo la query "pulita" per Nominatim
+                const query = `${street} ${civic}, ${city}, Italia`;
+                
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
                     const data = await res.json();
-                    if (data.length > 0) {
+                    
+                    if (data && data.length > 0) {
                         p.coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                    } else {
+                        alert(`Non trovo l'indirizzo: ${query}. Prova a scriverlo meglio.`);
+                        errorFound = true;
+                        break;
                     }
+                } catch (e) {
+                    console.error(e);
                 }
             }
 
-            // 2. Disegna Marker e calcola Percorso
-            renderMarkers();
-            await calcolaPercorso();
-
-            btn.innerText = "📍 CALCOLA PERCORSO E TARIFFE";
-            btn.classList.remove('loading');
+            if (!errorFound) {
+                renderMarkers();
+                await calcolaPercorso();
+            }
         }
 
         function renderMarkers() {
@@ -147,15 +164,15 @@
                     markers.push(m);
                 }
             });
-            if (markers.length > 1) {
+            if (markers.length > 0) {
                 const group = new L.featureGroup(markers);
-                map.fitBounds(group.getBounds().pad(0.2));
+                map.fitBounds(group.getBounds().pad(0.3));
             }
         }
 
         async function calcolaPercorso() {
             const valid = punti.filter(p => p.coords);
-            if (valid.length < 2) return alert("Inserisci almeno due indirizzi validi!");
+            if (valid.length < 2) return;
 
             let totalKm = 0;
             if (routeLine) map.removeLayer(routeLine);
@@ -169,14 +186,13 @@
                 const data = await response.json();
                 if (data.routes && data.routes[0]) {
                     totalKm += data.routes[0].distance / 1000;
-                    routeLine = L.geoJSON(data.routes[0].geometry, { style: { color: '#ef4444', weight: 6, opacity: 0.8 } }).addTo(map);
+                    routeLine = L.geoJSON(data.routes[0].geometry, { style: { color: '#ef4444', weight: 6 } }).addTo(map);
                 }
             }
-
-            aggiornaTariffa(totalKm);
+            aggiornaPrezzo(totalKm);
         }
 
-        function aggiornaTariffa(km) {
+        function aggiornaPrezzo(km) {
             const m = document.getElementById('mezzo').value;
             const ambito = document.getElementById('ambito').value;
             const tipo = document.getElementById('tipoViaggio').value;
@@ -186,10 +202,9 @@
             let totale = base + (km * t.km);
 
             document.getElementById('totaleDisplay').innerText = `€ ${totale.toLocaleString('it-IT', {minimumFractionDigits: 2})}`;
-            document.getElementById('kmDisplay').innerText = `${km.toFixed(1)} km rilevati`;
+            document.getElementById('kmDisplay').innerText = `${km.toFixed(1)} km calcolati`;
         }
 
-        // Inizializza con 2 punti (Partenza e Arrivo)
         aggiungiPunto();
         aggiungiPunto();
     </script>
