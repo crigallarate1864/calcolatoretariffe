@@ -3,107 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatore Tariffe CRI</title>
+    <title>Calcolatore CRI - Free Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        #map { height: 300px; border-radius: 12px; margin-bottom: 20px; z-index: 1; }
+        @media print { .no-print { display: none; } body { background: white; padding: 0; } .shadow-xl { shadow: none; border: 1px solid #eee; } }
+        .leaflet-control-geocoder { z-index: 1000 !important; }
+    </style>
 </head>
-<body class="bg-gray-100 p-5">
-    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
-        <h1 class="text-2xl font-bold text-red-600 mb-6">🚑 Calcolatore Trasporti Secondari</h1>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+<body class="bg-slate-50 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+        <div class="bg-red-600 p-6 text-white flex justify-between items-center">
             <div>
-                <label class="block font-semibold">Mezzo</label>
-                <select id="mezzo" class="w-full border p-2 rounded">
-                    <option value="amb">Ambulanza (2 Op.)</option>
-                    <option value="pul">Pulmino (2 Op.)</option>
-                    <option value="aut">Auto (1 Op.)</option>
-                </select>
+                <h1 class="text-2xl font-bold uppercase tracking-tighter">Calcolatore Trasporti 🚑</h1>
+                <p class="text-red-100 text-xs">Versione OpenStreetMap - Nessun costo API</p>
             </div>
-            <div>
-                <label class="block font-semibold">Ambito</label>
-                <select id="ambito" class="w-full border p-2 rounded">
-                    <option value="grande">Grande Città (>150k ab.)</option>
-                    <option value="piccolo">Piccolo Comune</option>
-                </select>
-            </div>
+            <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-red-50 transition">
+                STAMPA / PDF
+            </button>
         </div>
 
-        <div id="tappe-container" class="mb-6">
-            <label class="block font-semibold mb-2">Chilometri percorsi</label>
-            <div class="flex gap-2 mb-2">
-                <input type="number" placeholder="KM tappa 1" class="km-input w-full border p-2 rounded" value="0">
-            </div>
-        </div>
-        <button onclick="aggiungiTappa()" class="bg-gray-200 px-4 py-2 rounded mb-6 text-sm hover:bg-gray-300">+ Aggiungi Destinazione</button>
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-6 border-r border-gray-100">
+                <section class="mb-8">
+                    <h2 class="text-sm font-bold text-gray-400 uppercase mb-4">1. Configurazione</h2>
+                    <div class="space-y-4">
+                        <select id="mezzo" onchange="calcolaTutto()" class="w-full border-b-2 p-2 outline-none focus:border-red-500 bg-transparent">
+                            <option value="amb">Ambulanza (2 Op.)</option>
+                            <option value="pul">Pulmino (2 Op.)</option>
+                            <option value="aut">Auto (1 Op.)</option>
+                        </select>
+                        <select id="ambito" onchange="calcolaTutto()" class="w-full border-b-2 p-2 outline-none focus:border-red-500 bg-transparent">
+                            <option value="piccolo">Comune < 150k ab.</option>
+                            <option value="grande">Città > 150k / San Raffaele</option>
+                        </select>
+                        <select id="tipoViaggio" onchange="calcolaTutto()" class="w-full border-b-2 p-2 outline-none focus:border-red-500 bg-transparent">
+                            <option value="singola">Sola Andata</option>
+                            <option value="ar">Andata e Ritorno (A/R)</option>
+                        </select>
+                    </div>
+                </section>
 
-        <div class="space-y-3 mb-6 bg-gray-50 p-4 rounded">
-            <label class="flex items-center gap-2">
-                <input type="checkbox" id="andataRitorno"> Servizio Andata e Ritorno
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="checkbox" id="secondoPaziente"> 2° Paziente (+16.66€)
-            </label>
-            <div class="flex items-center gap-2">
-                <span>Minuti attesa extra:</span>
-                <input type="number" id="attesa" value="0" class="border p-1 w-20 rounded">
-            </div>
-        </div>
+                <section class="mb-8">
+                    <h2 class="text-sm font-bold text-gray-400 uppercase mb-4">2. Percorso</h2>
+                    <div id="punti-container" class="space-y-3">
+                        </div>
+                    <button onclick="aggiungiPunto()" class="no-print mt-4 text-red-600 text-sm font-bold hover:underline">
+                        + AGGIUNGI TAPPA
+                    </button>
+                </section>
 
-        <div class="border-t pt-6">
-            <div class="text-sm text-gray-500">Totale stimato:</div>
-            <div id="totale" class="text-4xl font-bold text-gray-800">€ 0,00</div>
+                <section class="bg-gray-50 p-4 rounded-xl space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">2° Paziente (+tariffa)</span>
+                        <input type="checkbox" id="paziente2" onchange="calcolaTutto()" class="w-5 h-5 accent-red-600">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Attesa (minuti oltre franchigia)</span>
+                        <input type="number" id="attesa" value="0" oninput="calcolaTutto()" class="w-16 border rounded text-center p-1">
+                    </div>
+                </section>
+            </div>
+
+            <div class="p-6 bg-slate-50/50">
+                <div id="map" class="no-print shadow-inner border border-gray-200"></div>
+                
+                <div class="mt-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Totale Stimato</p>
+                    <div id="totaleDisplay" class="text-5xl font-black text-gray-900 text-center my-2">€ 0,00</div>
+                    <div id="kmDisplay" class="text-red-600 text-center font-bold text-sm">0.0 km rilevati</div>
+                    
+                    <div class="mt-6 space-y-2 border-t pt-4 text-xs text-gray-500">
+                        <div class="flex justify-between"><span>Quota Fissa:</span><span id="det-fissa">€ 0,00</span></div>
+                        <div class="flex justify-between"><span>Quota KM:</span><span id="det-km">€ 0,00</span></div>
+                        <div class="flex justify-between"><span>Extra (Attesa/2° Paz):</span><span id="det-extra">€ 0,00</span></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
     <script>
-        const tariffe = {
-            amb: { fissa: 54.74, fissaGrande: 58.31, km: 1.13, attesa: 41.65 },
-            pul: { fissa: 49.98, fissaGrande: 49.98, km: 0.95, attesa: 41.65 },
-            aut: { fissa: 28.56, fissaGrande: 28.56, km: 0.60, attesa: 20.23 }
+        // Tariffe DGR
+        const TARIFFE = {
+            amb: { base: 54.74, baseGr: 58.31, ar: 120.19, arGr: 128.52, km: 1.13, attesa: 41.65, paz2: 16.66 },
+            pul: { base: 49.98, baseGr: 49.98, ar: 116.62, arGr: 110.67, km: 0.95, attesa: 41.65, paz2: 14.28 },
+            aut: { base: 28.56, baseGr: 28.56, ar: 63.07, arGr: 63.07, km: 0.60, attesa: 20.23, paz2: 11.90 }
         };
 
-        function aggiungiTappa() {
-            const container = document.getElementById('tappe-container');
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.placeholder = `KM tappa ${container.children.length}`;
-            input.className = 'km-input w-full border p-2 rounded mt-2';
-            input.value = 0;
-            input.oninput = calcola;
-            container.appendChild(input);
+        // Inizializzazione Mappa
+        const map = L.map('map').setView([45.4642, 9.1900], 10); // Milano come default
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        let punti = [];
+        let markers = [];
+        let polyline = null;
+        let kmTotali = 0;
+
+        function aggiungiPunto() {
+            const id = Date.now();
+            const container = document.getElementById('punti-container');
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-2 bg-white p-2 border rounded-lg shadow-sm";
+            div.innerHTML = `
+                <div class="w-2 h-2 rounded-full ${punti.length === 0 ? 'bg-green-500' : 'bg-red-500'}"></div>
+                <input type="text" id="input-${id}" placeholder="${punti.length === 0 ? 'Partenza' : 'Destinazione'}" class="flex-grow outline-none text-sm">
+                ${punti.length > 1 ? `<button onclick="rimuoviPunto(${id}, this.parentElement)" class="text-gray-300 hover:text-red-500">✕</button>` : ''}
+            `;
+            container.appendChild(div);
+
+            const geocoder = L.Control.Geocoder.nominatim();
+            const input = document.getElementById(`input-${id}`);
+
+            input.addEventListener('change', () => {
+                geocoder.geocode(input.value, (results) => {
+                    if (results && results.length > 0) {
+                        const res = results[0];
+                        aggiornaPunto(id, res.center, res.name);
+                        input.value = res.name;
+                    }
+                });
+            });
+
+            punti.push({ id, coords: null });
         }
 
-        function calcola() {
-            const mezzo = document.getElementById('mezzo').value;
+        function aggiornaPunto(id, coords, name) {
+            const p = punti.find(x => x.id === id);
+            p.coords = coords;
+            
+            // Aggiorna marker sulla mappa
+            renderMap();
+            calcolaPercorso();
+        }
+
+        function rimuoviPunto(id, el) {
+            el.remove();
+            punti = punti.filter(x => x.id !== id);
+            renderMap();
+            calcolaPercorso();
+        }
+
+        function renderMap() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            punti.forEach(p => {
+                if (p.coords) {
+                    const m = L.marker(p.coords).addTo(map);
+                    markers.push(m);
+                }
+            });
+            if (markers.length > 0) {
+                const group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        async function calcolaPercorso() {
+            const validPoints = punti.filter(p => p.coords !== null);
+            if (validPoints.length < 2) return;
+
+            let totalDistance = 0;
+            if (polyline) map.removeLayer(polyline);
+
+            for (let i = 0; i < validPoints.length - 1; i++) {
+                const p1 = validPoints[i].coords;
+                const p2 = validPoints[i+1].coords;
+                
+                // Chiamata al server OSRM (Gratuito)
+                const url = `https://router.project-osrm.org/route/v1/driving/${p1.lng},${p1.lat};${p2.lng},${p2.lat}?overview=full&geometries=geojson`;
+                
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (data.routes && data.routes[0]) {
+                        totalDistance += data.routes[0].distance;
+                        
+                        // Disegna linea sulla mappa
+                        polyline = L.geoJSON(data.routes[0].geometry, { style: { color: 'red', weight: 5 } }).addTo(map);
+                    }
+                } catch (e) { console.error("Errore routing", e); }
+            }
+
+            kmTotali = totalDistance / 1000;
+            calcolaTutto();
+        }
+
+        function calcolaTutto() {
+            const m = document.getElementById('mezzo').value;
             const ambito = document.getElementById('ambito').value;
-            const ar = document.getElementById('andataRitorno').checked;
-            const paz2 = document.getElementById('secondoPaziente').checked;
+            const tipo = document.getElementById('tipoViaggio').value;
+            const paz2 = document.getElementById('paziente2').checked;
             const attesaMin = parseInt(document.getElementById('attesa').value) || 0;
-            
-            const kmInputs = document.querySelectorAll('.km-input');
-            let totKm = 0;
-            kmInputs.forEach(i => totKm += parseFloat(i.value) || 0);
 
-            const t = tariffe[mezzo];
-            let base = (ambito === 'grande') ? t.fissaGrande : t.fissa;
-            
-            // Logica base
-            let costoBase = base;
-            let costoKm = totKm * t.km;
-            
-            // Attesa
-            let soglia = ar ? 90 : 60;
+            const t = TARIFFE[m];
+
+            // 1. Quota Fissa
+            let fissa = (tipo === 'ar') ? (ambito === 'grande' ? t.arGr : t.ar) : (ambito === 'grande' ? t.baseGr : t.base);
+
+            // 2. Quota KM
+            // Se A/R e l'utente ha messo solo una destinazione, raddoppiamo i km? 
+            // Meglio basarsi sui km reali del tragitto disegnato.
+            let costoKm = kmTotali * t.km;
+
+            // 3. Extra
+            let soglia = (tipo === 'ar') ? 90 : 60;
             let oreExtra = Math.ceil(Math.max(0, attesaMin - soglia) / 60);
-            let costoAttesa = oreExtra * t.attesa;
-            
-            let totale = costoBase + costoKm + costoAttesa + (paz2 ? 16.66 : 0);
-            
-            document.getElementById('totale').innerText = `€ ${totale.toFixed(2)}`;
+            let costoExtra = (oreExtra * t.attesa) + (paz2 ? t.paz2 : 0);
+
+            let totale = fissa + costoKm + costoExtra;
+
+            // Update UI
+            document.getElementById('totaleDisplay').innerText = `€ ${totale.toLocaleString('it-IT', {minimumFractionDigits: 2})}`;
+            document.getElementById('kmDisplay').innerText = `${kmTotali.toFixed(1)} km rilevati`;
+            document.getElementById('det-fissa').innerText = `€ ${fissa.toFixed(2)}`;
+            document.getElementById('det-km').innerText = `€ ${costoKm.toFixed(2)}`;
+            document.getElementById('det-extra').innerText = `€ ${costoExtra.toFixed(2)}`;
         }
 
-        // Aggiorna al cambio di ogni input
-        document.querySelectorAll('input, select').forEach(el => el.oninput = calcola);
-        calcola();
+        // Init
+        aggiungiPunto();
+        aggiungiPunto();
     </script>
 </body>
 </html>
