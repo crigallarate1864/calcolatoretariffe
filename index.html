@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Tariffe CRI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-5">
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold text-red-600 mb-6">🚑 Calcolatore Trasporti Secondari</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+                <label class="block font-semibold">Mezzo</label>
+                <select id="mezzo" class="w-full border p-2 rounded">
+                    <option value="amb">Ambulanza (2 Op.)</option>
+                    <option value="pul">Pulmino (2 Op.)</option>
+                    <option value="aut">Auto (1 Op.)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block font-semibold">Ambito</label>
+                <select id="ambito" class="w-full border p-2 rounded">
+                    <option value="grande">Grande Città (>150k ab.)</option>
+                    <option value="piccolo">Piccolo Comune</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="tappe-container" class="mb-6">
+            <label class="block font-semibold mb-2">Chilometri percorsi</label>
+            <div class="flex gap-2 mb-2">
+                <input type="number" placeholder="KM tappa 1" class="km-input w-full border p-2 rounded" value="0">
+            </div>
+        </div>
+        <button onclick="aggiungiTappa()" class="bg-gray-200 px-4 py-2 rounded mb-6 text-sm hover:bg-gray-300">+ Aggiungi Destinazione</button>
+
+        <div class="space-y-3 mb-6 bg-gray-50 p-4 rounded">
+            <label class="flex items-center gap-2">
+                <input type="checkbox" id="andataRitorno"> Servizio Andata e Ritorno
+            </label>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" id="secondoPaziente"> 2° Paziente (+16.66€)
+            </label>
+            <div class="flex items-center gap-2">
+                <span>Minuti attesa extra:</span>
+                <input type="number" id="attesa" value="0" class="border p-1 w-20 rounded">
+            </div>
+        </div>
+
+        <div class="border-t pt-6">
+            <div class="text-sm text-gray-500">Totale stimato:</div>
+            <div id="totale" class="text-4xl font-bold text-gray-800">€ 0,00</div>
+        </div>
+    </div>
+
+    <script>
+        const tariffe = {
+            amb: { fissa: 54.74, fissaGrande: 58.31, km: 1.13, attesa: 41.65 },
+            pul: { fissa: 49.98, fissaGrande: 49.98, km: 0.95, attesa: 41.65 },
+            aut: { fissa: 28.56, fissaGrande: 28.56, km: 0.60, attesa: 20.23 }
+        };
+
+        function aggiungiTappa() {
+            const container = document.getElementById('tappe-container');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.placeholder = `KM tappa ${container.children.length}`;
+            input.className = 'km-input w-full border p-2 rounded mt-2';
+            input.value = 0;
+            input.oninput = calcola;
+            container.appendChild(input);
+        }
+
+        function calcola() {
+            const mezzo = document.getElementById('mezzo').value;
+            const ambito = document.getElementById('ambito').value;
+            const ar = document.getElementById('andataRitorno').checked;
+            const paz2 = document.getElementById('secondoPaziente').checked;
+            const attesaMin = parseInt(document.getElementById('attesa').value) || 0;
+            
+            const kmInputs = document.querySelectorAll('.km-input');
+            let totKm = 0;
+            kmInputs.forEach(i => totKm += parseFloat(i.value) || 0);
+
+            const t = tariffe[mezzo];
+            let base = (ambito === 'grande') ? t.fissaGrande : t.fissa;
+            
+            // Logica base
+            let costoBase = base;
+            let costoKm = totKm * t.km;
+            
+            // Attesa
+            let soglia = ar ? 90 : 60;
+            let oreExtra = Math.ceil(Math.max(0, attesaMin - soglia) / 60);
+            let costoAttesa = oreExtra * t.attesa;
+            
+            let totale = costoBase + costoKm + costoAttesa + (paz2 ? 16.66 : 0);
+            
+            document.getElementById('totale').innerText = `€ ${totale.toFixed(2)}`;
+        }
+
+        // Aggiorna al cambio di ogni input
+        document.querySelectorAll('input, select').forEach(el => el.oninput = calcola);
+        calcola();
+    </script>
+</body>
+</html>
