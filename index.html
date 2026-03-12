@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preventivatore CRI - D.G.R. XII/437</title>
+    <title>Preventivatore CRI - ViaMichelin Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print { .no-print { display: none; } body { background: white; } }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-2 md:p-8 font-sans">
+<body class="bg-stone-100 min-h-screen p-2 md:p-8 font-sans">
 
     <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
         <div class="bg-red-600 p-6 text-white flex justify-between items-center">
             <div>
                 <h1 class="text-2xl font-black uppercase tracking-tight">Preventivatore Trasporti 🚑</h1>
-                <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest">Integrazione Esterna Google Maps • Gratuito</p>
+                <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest italic">Motore di calcolo: ViaMichelin</p>
             </div>
-            <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs uppercase shadow-lg hover:bg-gray-100 transition">Salva PDF</button>
+            <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs uppercase shadow-lg hover:bg-stone-50 transition">Stampa PDF</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="p-6 space-y-6 border-r border-gray-100">
                 
-                <div class="space-y-4 bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                <div class="space-y-4 bg-stone-50 p-5 rounded-2xl border border-stone-200">
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Mezzo Impiegato</label>
-                        <select id="mezzo" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b-2 border-gray-300 p-1 font-bold text-gray-700 outline-none focus:border-red-500">
+                        <label class="text-[10px] font-black text-stone-400 uppercase block mb-1">Mezzo</label>
+                        <select id="mezzo" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b-2 border-stone-300 p-1 font-bold text-stone-700 outline-none focus:border-red-500">
                             <option value="amb">Ambulanza (2 Op.)</option>
                             <option value="pul">Pulmino (2 Op.)</option>
                             <option value="aut">Auto (1 Op.)</option>
@@ -35,101 +35,82 @@
                     </div>
                     
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Comune di DESTINAZIONE</label>
-                        <select id="ambito" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-gray-300 p-1 text-sm outline-none font-medium">
+                        <label class="text-[10px] font-black text-stone-400 uppercase block mb-1 text-red-600">Comune di DESTINAZIONE</label>
+                        <select id="ambito" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-stone-300 p-1 text-sm outline-none font-medium">
                             <option value="piccolo">Sotto 150.000 abitanti</option>
-                            <option value="grande">Sopra 150.000 abitanti (o S. Raffaele MI)</option>
+                            <option value="grande">Sopra 150.000 abitanti</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Tipologia Servizio</label>
-                        <select id="tipoViaggio" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-gray-300 p-1 text-sm outline-none font-medium">
-                            <option value="singola">Tratta Singola (Solo Andata)</option>
-                            <option value="ar">Andata e Ritorno (Stesso Assistito)</option>
+                        <label class="text-[10px] font-black text-stone-400 uppercase block mb-1">Servizio</label>
+                        <select id="tipoViaggio" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-stone-300 p-1 text-sm outline-none font-medium">
+                            <option value="singola">Sola Andata</option>
+                            <option value="ar">Andata e Ritorno</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Punti di Carico/Scarico</h3>
+                    <h3 class="text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">Indirizzi (per ViaMichelin)</h3>
                     <div id="container-tappe" class="space-y-2">
-                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-blue-100 outline-none" placeholder="Indirizzo Partenza (Sede/Domicilio)">
-                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-blue-100 outline-none" placeholder="Indirizzo Destinazione (Ospedale/Clinica)">
+                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-red-100 outline-none" placeholder="Partenza (Città, Via, Civico)">
+                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-red-100 outline-none" placeholder="Destinazione (Città, Via, Civico)">
                     </div>
-                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline">+ Aggiungi tappa intermedia</button>
                     
-                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 mt-2">
-                        🌐 CALCOLA PERCORSO SU GOOGLE MAPS
+                    <button onclick="apriViaMichelin()" class="no-print w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2 mt-2">
+                        🗺️ CALCOLA SU VIAMICHELIN
                     </button>
                 </div>
 
-                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 shadow-inner">
-                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest">KM Totali (leggi su Google Maps):</label>
+                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200">
+                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest">KM totali rilevati:</label>
                     <div class="flex items-center gap-4 font-black">
-                        <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzo()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none focus:ring-4 focus:ring-amber-200">
+                        <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzo()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none">
                         <span class="text-2xl text-amber-600">KM</span>
                     </div>
                 </div>
             </div>
 
-            <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
+            <div class="p-6 bg-stone-50 flex flex-col justify-center items-center text-center">
                 <div class="mb-8">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2">Prezzo Totale (Arrotondato)</p>
-                    <div id="totaleDisplay" class="text-8xl font-black text-slate-900 tracking-tighter drop-shadow-sm">€ 0,00</div>
-                    <div id="riepilogo-testo" class="text-xs font-bold text-red-600 mt-4 uppercase tracking-tighter italic">Inserisci i km per calcolare</div>
+                    <p class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-2">Prezzo Finale</p>
+                    <div id="totaleDisplay" class="text-8xl font-black text-stone-900 tracking-tighter">€ 0,00</div>
+                    <div id="riepilogo-testo" class="text-xs font-bold text-red-600 mt-4 uppercase italic">Inserisci i km per calcolare</div>
                 </div>
 
                 <div class="w-full max-w-xs space-y-4 px-6 no-print border-t pt-8">
                     <div class="flex justify-between items-center bg-white p-3 rounded-xl border">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase">2° Paziente</label>
+                        <label class="text-[10px] font-bold text-stone-500 uppercase tracking-widest">2° Paziente</label>
                         <input type="checkbox" id="paziente2" onchange="aggiornaPrezzo()" class="w-6 h-6 accent-red-600 cursor-pointer">
                     </div>
                     <div class="flex justify-between items-center bg-white p-3 rounded-xl border">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase italic">Minuti Attesa</label>
-                        <input type="number" id="attesa" value="0" step="15" oninput="aggiornaPrezzo()" class="w-16 border-b-2 border-red-200 text-center font-black text-red-600 outline-none">
+                        <label class="text-[10px] font-bold text-stone-500 uppercase italic">Minuti Attesa</label>
+                        <input type="number" id="attesa" value="0" oninput="aggiornaPrezzo()" class="w-16 border-b-2 border-red-200 text-center font-black text-red-600 outline-none">
                     </div>
-                </div>
-
-                <div class="mt-12 text-[9px] text-slate-300 font-bold uppercase tracking-[0.2em] max-w-xs leading-relaxed">
-                    Software conforme alle condizioni economiche regionali per il trasporto sanitario semplice.
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Tariffe caricate dal file Excel fornito
         const TARIFFE = {
             amb: { fissa: 54.74, fGr: 58.31, ar: 120.19, arGr: 128.52, km: 1.13, p2: 16.66, att: 41.65 },
             pul: { fissa: 49.98, fGr: 49.98, ar: 116.62, arGr: 110.67, km: 0.95, p2: 14.28, att: 41.65 },
             aut: { fissa: 28.56, fGr: 28.56, ar: 63.07, arGr: 63.07, km: 0.60, p2: 11.90, att: 20.23 }
         };
 
-        function aggiungiTappa() {
-            const container = document.getElementById('container-tappe');
-            const input = document.createElement('input');
-            input.className = "tappa-input w-full p-3 border rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-blue-100 outline-none mt-2";
-            input.placeholder = "Tappa intermedia (es. Clinica X)";
-            container.appendChild(input);
-        }
-
-        function apriGoogleMaps() {
+        function apriViaMichelin() {
             const inputs = document.querySelectorAll('.tappa-input');
             const locations = Array.from(inputs).map(i => encodeURIComponent(i.value)).filter(v => v !== "");
             
             if (locations.length < 2) {
-                alert("Inserisci almeno l'indirizzo di Partenza e di Destinazione!");
+                alert("Inserisci almeno Partenza e Destinazione!");
                 return;
             }
 
-            // Costruzione link per Google Maps
-            const origin = locations[0];
-            const destination = locations[locations.length - 1];
-            const waypoints = locations.slice(1, -1).join('|');
-            
-            let url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`;
-            if (waypoints) url += `&waypoints=${waypoints}`;
+            // URL Itinerario ViaMichelin (permette partenza e arrivo)
+            const url = `https://www.viamichelin.it/web/Itinerario?departure=${locations[0]}&arrival=${locations[1]}&index=0&vehicle=0&type=0&distance=km&currency=EUR`;
             
             window.open(url, '_blank');
         }
@@ -144,30 +125,17 @@
 
             const t = TARIFFE[m];
 
-            // 1. Quota Fissa
-            // Logica: se destinazione > 150k abitanti, usa tariffa urbana/grande città
             let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.fGr : t.fissa);
-            
-            // 2. Calcolo Attesa (60 min franchigia tratta singola, 90 min A/R)
             let soglia = (tip === 'ar') ? 90 : 60;
             let oreAttesa = Math.ceil(Math.max(0, attMin - soglia) / 60);
-            let costoAttesa = oreAttesa * t.att;
 
-            // 3. Somma Finale
-            let totale = base + (km * t.km) + costoAttesa + (p2 ? t.p2 : 0);
+            let totale = base + (km * t.km) + (oreAttesa * t.att) + (p2 ? t.p2 : 0);
 
             // Arrotondamento matematico a 2 decimali
             totale = Math.round((totale + Number.EPSILON) * 100) / 100;
 
-            // Visualizzazione con formattazione italiana (virgola)
-            document.getElementById('totaleDisplay').innerText = `€ ${totale.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            
-            // Testo di riepilogo
-            if(km > 0) {
-                document.getElementById('riepilogo-testo').innerText = `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra`;
-            } else {
-                document.getElementById('riepilogo-testo').innerText = "Inserisci i chilometri per calcolare";
-            }
+            document.getElementById('totaleDisplay').innerText = `€ ${totale.toLocaleString('it-IT', {minimumFractionDigits: 2})}`;
+            document.getElementById('riepilogo-testo').innerText = km > 0 ? `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra` : "Inserisci i km per calcolare";
         }
     </script>
 </body>
