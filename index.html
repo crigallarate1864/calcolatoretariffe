@@ -13,202 +13,263 @@
 </head>
 <body class="bg-slate-100 min-h-screen p-2 md:p-8 font-sans text-left">
 
-    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
+    <div id="home-screen" class="max-w-4xl mx-auto space-y-8 mt-10 md:mt-20">
+        <div class="text-center space-y-4">
+            <h1 class="text-4xl font-black text-slate-800 uppercase italic tracking-tighter">CRI Gallarate Route Master 🚑</h1>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-sm text-center">Seleziona il tipo di servizio per calcolare la tariffa</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button onclick="mostraModulo('secondari')" class="bg-white p-10 rounded-3xl shadow-xl border-2 border-transparent hover:border-red-600 transition-all group text-center">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition">🏥</div>
+                <h2 class="text-xl font-black uppercase text-slate-800">Trasporti Secondari</h2>
+                <p class="text-slate-400 text-xs mt-2 italic text-center">Dimissioni, visite, dialisi (DGR XII/437)</p>
+            </button>
+
+            <button onclick="mostraModulo('eventi')" class="bg-white p-10 rounded-3xl shadow-xl border-2 border-transparent hover:border-blue-600 transition-all group text-center">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition">🏃‍♂️</div>
+                <h2 class="text-xl font-black uppercase text-slate-800">Eventi e Manifestazioni</h2>
+                <p class="text-slate-400 text-xs mt-2 italic text-center">Gare sportive, concerti, presidi</p>
+            </button>
+        </div>
+    </div>
+
+    <div id="modulo-secondari" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden">
         <div class="bg-red-600 p-6 text-white flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-black uppercase tracking-tight text-left italic">CRI Gallarate Route Master 🚑</h1>
-                <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest text-left">D.G.R. XII/437 • Trasparenza Costi • Google Maps</p>
+            <button onclick="tornaHome()" class="no-print bg-white/20 hover:bg-white/30 p-2 rounded-lg text-xs font-bold uppercase">⬅ Home</button>
+            <div class="text-right">
+                <h1 class="text-xl font-black uppercase tracking-tight italic">Trasporti Secondari</h1>
             </div>
-            <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs uppercase shadow-lg hover:bg-gray-100 transition">Salva PDF</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2">
             <div class="p-6 space-y-6 border-r border-gray-100">
-                
-                <div class="grid grid-cols-1 gap-2 no-print">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Dati Servizio (opzionali)</label>
-                    <input type="text" id="nome-paziente" placeholder="Nome Paziente / N° Foglio Viaggio" class="w-full border-b p-2 text-sm outline-none focus:border-red-500 bg-gray-50 rounded-t-lg">
-                </div>
-
+                <input type="text" id="nome-paziente" placeholder="Nome Paziente / N° Foglio Viaggio" class="w-full border-b p-2 text-sm outline-none focus:border-red-500 bg-gray-50 rounded-lg">
                 <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Mezzo</label>
-                        <select id="mezzo" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b-2 border-slate-300 p-1 font-bold text-slate-700 outline-none focus:border-red-500">
-                            <option value="amb">Ambulanza (2 Op.)</option>
-                            <option value="pul">Pulmino (2 Op.)</option>
-                            <option value="aut">Auto (1 Op.)</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="text-[10px] font-black text-red-600 uppercase block mb-1 leading-tight">Comune di DESTINAZIONE</label>
-                        <select id="ambito" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-slate-300 p-1 text-sm outline-none font-medium">
-                            <option value="piccolo">Sotto 150.000 abitanti</option>
-                            <option value="grande">Sopra 150.000 abitanti (o S. Raffaele MI)</option>
-                        </select>
-                    </div>
-
+                    <select id="mezzo" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b-2 border-slate-300 p-1 font-bold outline-none">
+                        <option value="amb">Ambulanza (2 Op.)</option>
+                        <option value="pul">Pulmino (2 Op.)</option>
+                        <option value="aut">Auto (1 Op.)</option>
+                    </select>
+                    <select id="ambito" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-sm outline-none">
+                        <option value="piccolo">Comune Destinazione < 150k</option>
+                        <option value="grande">Comune Destinazione > 150k</option>
+                    </select>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Servizio</label>
-                            <select id="tipoViaggio" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none">
-                                <option value="singola">Sola Andata</option>
-                                <option value="ar">Andata e Ritorno</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Attesa (Min.)</label>
-                            <input type="number" id="attesa" value="0" oninput="aggiornaPrezzo()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-red-600">
-                        </div>
+                        <select id="tipoViaggio" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none">
+                            <option value="singola">Sola Andata</option>
+                            <option value="ar">Andata e Ritorno</option>
+                        </select>
+                        <input type="number" id="attesa" value="0" oninput="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-red-600" placeholder="Minuti Attesa">
                     </div>
                 </div>
-
                 <div class="space-y-3">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Percorso (Link Google Maps)</h3>
                     <div id="container-tappe" class="space-y-2">
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Partenza</span>
-                            <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="es: CRI Gallarate">
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa 1</span>
-                            <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Città, Via, Civico">
-                        </div>
+                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm" placeholder="Partenza (CRI Gallarate)">
+                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm" placeholder="Tappa 1">
                     </div>
-                    
-                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline tracking-tight">+ Aggiungi tappa successiva</button>
-                    
-                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest">
-                        🌐 Calcola Percorso su Maps
-                    </button>
+                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline">+ Aggiungi tappa</button>
+                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-blue-700 transition uppercase text-xs">🌐 Calcola Percorso su Maps</button>
                 </div>
-
                 <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 shadow-inner">
-                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest text-left">KM Totali (leggi su Google Maps):</label>
-                    <div class="flex items-center gap-4 font-black">
-                        <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzo()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none focus:ring-4 focus:ring-amber-200">
-                        <span class="text-2xl text-amber-600">KM</span>
-                    </div>
+                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest">KM Totali (da Google Maps):</label>
+                    <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzoSecondari()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none">
                 </div>
             </div>
 
             <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
-                <div class="space-y-2 mb-6 w-full">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Prezzo Totale</p>
-                    <div id="totaleDisplay" class="text-8xl font-black text-slate-900 tracking-tighter">€ 0,00</div>
-                    <div id="riepilogo-testo" class="text-xs font-bold text-red-600 uppercase tracking-tighter">Inserisci i KM per il calcolo</div>
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2">Prezzo Totale</p>
+                <div id="totaleDisplay" class="text-7xl font-black text-slate-900 tracking-tighter mb-4">€ 0,00</div>
+                <button onclick="toggleDettaglio('dettaglioSecondari')" class="no-print bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-bold uppercase mb-6">🔍 Giustificativo Costi</button>
+                <div id="dettaglioSecondari" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-3 hidden">
+                    <h4 class="text-xs font-black uppercase border-b pb-2 mb-4 tracking-widest">Dettaglio DGR XII/437</h4>
+                    <div class="flex justify-between text-sm"><span>Quota Fissa:</span><span id="det-fissa-s" class="font-bold">€ 0,00</span></div>
+                    <div class="flex justify-between text-sm"><span>Quota KM:</span><span id="det-km-s" class="font-bold">€ 0,00</span></div>
+                    <div id="row-attesa-s" class="flex justify-between text-sm hidden"><span>Attesa Extra:</span><span id="det-attesa-s" class="font-bold">€ 0,00</span></div>
                 </div>
-
-                <button onclick="toggleDettaglio()" class="no-print bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-slate-300 transition mb-6">
-                    🔍 Mostra Giustificativo Costi DGR
-                </button>
-
-                <div id="dettaglioCosti" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-3 mb-6 hidden animate-in slide-in-from-top-4 duration-300">
-                    <h4 class="text-xs font-black text-slate-800 uppercase border-b pb-2 mb-4 tracking-widest">Dettaglio Voci di Costo</h4>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500 italic">Quota Fissa (Base):</span>
-                        <span id="det-fissa" class="font-bold text-slate-700">€ 0,00</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500 italic">Quota Chilometrica:</span>
-                        <span id="det-km" class="font-bold text-slate-700">€ 0,00</span>
-                    </div>
-                    <div id="row-attesa" class="flex justify-between text-sm hidden">
-                        <span class="text-slate-500 italic">Indennità Fermo Macchina:</span>
-                        <span id="det-attesa" class="font-bold text-red-600">€ 0,00</span>
-                    </div>
-                    <div id="row-paziente2" class="flex justify-between text-sm hidden">
-                        <span class="text-slate-500 italic">Supplemento 2° Paziente:</span>
-                        <span id="det-paz2" class="font-bold text-red-600">€ 0,00</span>
-                    </div>
-                    <div class="pt-4 border-t flex justify-between font-black text-lg text-slate-900">
-                        <span>TOTALE:</span>
-                        <span id="det-totale">€ 0,00</span>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-xs space-y-3 no-print border-t pt-8 text-left">
-                    <div class="flex justify-between items-center bg-white p-3 rounded-xl border">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase">2° Paziente Trasportato</label>
-                        <input type="checkbox" id="paziente2" onchange="aggiornaPrezzo()" class="w-6 h-6 accent-red-600 cursor-pointer">
-                    </div>
-                </div>
-
-                <div class="mt-12 text-[9px] text-slate-300 font-bold uppercase tracking-[0.2em] max-w-xs leading-relaxed text-center">
-                    Software per uso interno • CRI Gallarate Route Master
+                <div class="flex gap-2 no-print mt-4">
+                    <input type="checkbox" id="paziente2" onchange="aggiornaPrezzoSecondari()" class="w-5 h-5 accent-red-600">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">2° Paziente</label>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="modulo-eventi" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden">
+        <div class="bg-blue-600 p-6 text-white flex justify-between items-center">
+            <button onclick="tornaHome()" class="no-print bg-white/20 hover:bg-white/30 p-2 rounded-lg text-xs font-bold uppercase">⬅ Home</button>
+            <div class="text-right">
+                <h1 class="text-xl font-black uppercase tracking-tight italic">Eventi e Manifestazioni</h1>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-6 space-y-6 border-r border-gray-100">
+                <div class="space-y-4">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Composizione Equipaggi</h3>
+                    <div id="container-eventi" class="space-y-4">
+                        </div>
+                    <button onclick="aggiungiEquipaggio()" class="no-print text-blue-600 text-[10px] font-bold uppercase hover:underline">+ Aggiungi Mezzo/Equipaggio</button>
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2 font-center">Preventivo Manifestazione</p>
+                <div id="totaleEventiDisplay" class="text-7xl font-black text-slate-900 tracking-tighter mb-4 text-center">€ 0,00</div>
+                
+                <div id="dettaglioEventi" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-4">
+                    <h4 class="text-xs font-black uppercase border-b pb-2 tracking-widest text-center">Riepilogo Costi</h4>
+                    <div id="lista-voci-eventi" class="space-y-2 text-sm">
+                        </div>
+                    <div class="pt-4 border-t flex justify-between font-black text-xl text-slate-900">
+                        <span>TOTALE:</span>
+                        <span id="det-totale-e">€ 0,00</span>
+                    </div>
+                </div>
+                
+                <button onclick="window.print()" class="no-print mt-6 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold uppercase text-xs shadow-lg">Salva Preventivo PDF</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const TARIFFE = {
+        // DATI TARIFFE
+        const TARIFFE_S = {
             amb: { fissa: 54.74, fGr: 58.31, ar: 120.19, arGr: 128.52, km: 1.13, p2: 16.66, att: 41.65 },
             pul: { fissa: 49.98, fGr: 49.98, ar: 116.62, arGr: 110.67, km: 0.95, p2: 14.28, att: 41.65 },
             aut: { fissa: 28.56, fGr: 28.56, ar: 63.07, arGr: 63.07, km: 0.60, p2: 11.90, att: 20.23 }
         };
 
+        const TARIFFE_E = {
+            ambulanza: { chiamata: 50.00, oraria: 40.00 },
+            appiedato: { chiamata: 0.00, oraria: 30.00 }
+        };
+
+        // GESTIONE NAVIGAZIONE
+        function mostraModulo(tipo) {
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('modulo-secondari').classList.add('hidden');
+            document.getElementById('modulo-eventi').classList.add('hidden');
+            document.getElementById('modulo-' + tipo).classList.remove('hidden');
+            if(tipo === 'eventi' && document.querySelectorAll('.equipaggio-row').length === 0) {
+                aggiungiEquipaggio();
+            }
+        }
+
+        function tornaHome() {
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('modulo-secondari').classList.add('hidden');
+            document.getElementById('modulo-eventi').classList.add('hidden');
+        }
+
+        // --- LOGICA TRASPORTI SECONDARI ---
         function aggiungiTappa() {
             const container = document.getElementById('container-tappe');
-            const numTappe = document.querySelectorAll('.tappa-input').length;
-            const div = document.createElement('div');
-            div.className = "flex flex-col mt-2";
-            div.innerHTML = `
-                <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa ${numTappe}</span>
-                <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Città, Via, Civico">
-            `;
-            container.appendChild(div);
+            const num = document.querySelectorAll('.tappa-input').length;
+            const input = document.createElement('input');
+            input.className = "tappa-input w-full p-3 border rounded-xl text-sm mt-2";
+            input.placeholder = "Tappa " + num;
+            container.appendChild(input);
         }
 
         function apriGoogleMaps() {
             const inputs = document.querySelectorAll('.tappa-input');
-            const locations = Array.from(inputs).map(i => encodeURIComponent(i.value)).filter(v => v !== "");
-            if (locations.length < 2) { alert("Inserisci almeno Partenza e Tappa 1!"); return; }
-            const url = "https://www.google.com/maps/dir/" + locations.join("/");
-            window.open(url, '_blank');
+            const locs = Array.from(inputs).map(i => encodeURIComponent(i.value)).filter(v => v !== "");
+            if (locs.length < 2) { alert("Inserisci Partenza e Tappa 1"); return; }
+            window.open("https://cloud.google.com/maps-platform/pricing7" + locs.join("/"), '_blank');
         }
 
-        function toggleDettaglio() {
-            document.getElementById('dettaglioCosti').classList.toggle('hidden');
-        }
-
-        function aggiornaPrezzo() {
+        function aggiornaPrezzoSecondari() {
             const m = document.getElementById('mezzo').value;
             const amb = document.getElementById('ambito').value;
             const tip = document.getElementById('tipoViaggio').value;
-            const p2 = document.getElementById('paziente2').checked;
-            const attMin = parseInt(document.getElementById('attesa').value) || 0;
             const km = parseFloat(document.getElementById('km-input').value) || 0;
+            const attMin = parseInt(document.getElementById('attesa').value) || 0;
+            const p2 = document.getElementById('paziente2').checked;
 
-            const t = TARIFFE[m];
-
-            let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.baseGr : t.fissa);
-            let costoKm = km * t.km;
-            let soglia = (tip === 'ar') ? 90 : 60;
-            let oreAttesa = Math.ceil(Math.max(0, attMin - soglia) / 60);
-            let costoAttesa = oreAttesa * t.att;
-            let costoPaz2 = p2 ? t.p2 : 0;
-
-            let totale = base + costoKm + costoAttesa + costoPaz2;
+            const t = TARIFFE_S[m];
+            let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.fGr : t.fissa);
+            let oreAtt = Math.ceil(Math.max(0, attMin - (tip === 'ar' ? 90 : 60)) / 60);
+            let totale = base + (km * t.km) + (oreAtt * t.att) + (p2 ? t.p2 : 0);
             totale = Math.round((totale + Number.EPSILON) * 100) / 100;
 
-            const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2});
             document.getElementById('totaleDisplay').innerText = `€ ${fmt(totale)}`;
-            document.getElementById('det-fissa').innerText = `€ ${fmt(base)}`;
-            document.getElementById('det-km').innerText = `€ ${fmt(costoKm)}`;
-            document.getElementById('det-totale').innerText = `€ ${fmt(totale)}`;
+            document.getElementById('det-fissa-s').innerText = `€ ${fmt(base)}`;
+            document.getElementById('det-km-s').innerText = `€ ${fmt(km * t.km)}`;
+        }
 
-            if(costoAttesa > 0) {
-                document.getElementById('row-attesa').classList.remove('hidden');
-                document.getElementById('det-attesa').innerText = `€ ${fmt(costoAttesa)}`;
-            } else { document.getElementById('row-attesa').classList.add('hidden'); }
+        function toggleDettaglio(id) { document.getElementById(id).classList.toggle('hidden'); }
 
-            if(p2) {
-                document.getElementById('row-paziente2').classList.remove('hidden');
-                document.getElementById('det-paz2').innerText = `€ ${fmt(costoPaz2)}`;
-            } else { document.getElementById('row-paziente2').classList.add('hidden'); }
-            
-            document.getElementById('riepilogo-testo').innerText = km > 0 ? `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra` : "Inserisci i KM per il calcolo";
+        // --- LOGICA EVENTI ---
+        function aggiungiEquipaggio() {
+            const container = document.getElementById('container-eventi');
+            const id = Date.now();
+            const div = document.createElement('div');
+            div.className = "equipaggio-row bg-white p-4 rounded-2xl border border-blue-100 shadow-sm space-y-3 relative";
+            div.innerHTML = `
+                <div class="flex justify-between items-center border-b pb-2">
+                    <select onchange="calcolaEventi()" class="tipo-e font-bold text-blue-600 bg-transparent outline-none">
+                        <option value="ambulanza">🚑 Ambulanza</option>
+                        <option value="appiedato">🚶‍♂️ Squadra Appiedata</option>
+                    </select>
+                    <button onclick="this.parentElement.parentElement.remove(); calcolaEventi();" class="text-slate-300 hover:text-red-500">✕</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-slate-400">Quantità</label>
+                        <input type="number" value="1" min="1" oninput="calcolaEventi()" class="qty-e w-full border-b p-1 font-bold text-center">
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-slate-400">Ore</label>
+                        <input type="number" value="1" min="0" oninput="calcolaEventi()" class="h-e w-full border-b p-1 font-bold text-center">
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-slate-400">Minuti</label>
+                        <select onchange="calcolaEventi()" class="m-e w-full border-b p-1 font-bold text-center bg-transparent">
+                            <option value="0">00</option><option value="15">15</option>
+                            <option value="30">30</option><option value="45">45</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            calcolaEventi();
+        }
+
+        function calcolaEventi() {
+            const rows = document.querySelectorAll('.equipaggio-row');
+            let totale = 0;
+            const lista = document.getElementById('lista-voci-eventi');
+            lista.innerHTML = "";
+
+            rows.forEach(row => {
+                const tipo = row.querySelector('.tipo-e').value;
+                const qty = parseInt(row.querySelector('.qty-e').value) || 0;
+                const h = parseInt(row.querySelector('.h-e').value) || 0;
+                const m = parseInt(row.querySelector('.m-e').value) || 0;
+
+                const t = TARIFFE_E[tipo];
+                const tempoDecimale = h + (m / 60);
+                
+                const costoChiamata = t.chiamata * qty;
+                const costoOrario = (t.oraria * tempoDecimale) * qty;
+                const rigaTotale = costoChiamata + costoOrario;
+                totale += rigaTotale;
+
+                // Aggiungi al riepilogo
+                const div = document.createElement('div');
+                div.className = "flex justify-between";
+                div.innerHTML = `
+                    <span>${qty}x ${tipo === 'ambulanza' ? 'Ambulanza' : 'Appiedato'} (${h}h ${m}m)</span>
+                    <span class="font-bold font-center text-center">€ ${rigaTotale.toLocaleString('it-IT', {minimumFractionDigits: 2})}</span>
+                `;
+                lista.appendChild(div);
+            });
+
+            const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2});
+            document.getElementById('totaleEventiDisplay').innerText = `€ ${fmt(totale)}`;
+            document.getElementById('det-totale-e').innerText = `€ ${fmt(totale)}`;
         }
     </script>
 </body>
