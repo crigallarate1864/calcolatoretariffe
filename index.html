@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preventivatore CRI - Google Maps Multitappa</title>
+    <title>Preventivatore CRI Gallarate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print { .no-print { display: none; } body { background: white; } }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .hidden { display: none; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-2 md:p-8 font-sans">
+<body class="bg-slate-100 min-h-screen p-2 md:p-8 font-sans text-left">
 
     <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
         <div class="bg-red-600 p-6 text-white flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-black uppercase tracking-tight">Preventivatore Trasporti 🚑</h1>
-                <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest">Integrazione Google Maps • Multitappa • D.G.R. XII/437</p>
+                <h1 class="text-2xl font-black uppercase tracking-tight text-left">Preventivatore Trasporti 🚑</h1>
+                <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest text-left">D.G.R. XII/437 • Trasparenza Costi • Google Maps</p>
             </div>
             <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs uppercase shadow-lg hover:bg-gray-100 transition">Salva PDF</button>
         </div>
@@ -24,13 +25,13 @@
         <div class="grid grid-cols-1 lg:grid-cols-2">
             <div class="p-6 space-y-6 border-r border-gray-100">
                 
-                <div class="grid grid-cols-1 gap-2 no-print text-left">
+                <div class="grid grid-cols-1 gap-2 no-print">
                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Dati Servizio (opzionali)</label>
                     <input type="text" id="nome-paziente" placeholder="Nome Paziente / N° Foglio Viaggio" class="w-full border-b p-2 text-sm outline-none focus:border-red-500 bg-gray-50 rounded-t-lg">
                 </div>
 
                 <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                    <div class="text-left">
+                    <div>
                         <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Mezzo</label>
                         <select id="mezzo" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b-2 border-slate-300 p-1 font-bold text-slate-700 outline-none focus:border-red-500">
                             <option value="amb">Ambulanza (2 Op.)</option>
@@ -39,15 +40,15 @@
                         </select>
                     </div>
                     
-                    <div class="text-left">
-                        <label class="text-[10px] font-black text-red-600 uppercase block mb-1">Comune di DESTINAZIONE</label>
+                    <div>
+                        <label class="text-[10px] font-black text-red-600 uppercase block mb-1 leading-tight">Comune di DESTINAZIONE</label>
                         <select id="ambito" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-slate-300 p-1 text-sm outline-none font-medium">
                             <option value="piccolo">Sotto 150.000 abitanti</option>
                             <option value="grande">Sopra 150.000 abitanti (o S. Raffaele MI)</option>
                         </select>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 text-left">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Servizio</label>
                             <select id="tipoViaggio" onchange="aggiornaPrezzo()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none">
@@ -62,22 +63,28 @@
                     </div>
                 </div>
 
-                <div class="space-y-3 text-left">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Indirizzi (per Google Maps)</h3>
+                <div class="space-y-3">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Percorso (Link Google Maps)</h3>
                     <div id="container-tappe" class="space-y-2">
-                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Partenza (Città, Via, Civico)">
-                        <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Destinazione (Città, Via, Civico)">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Partenza</span>
+                            <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="es: CRI Gallarate">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa 1</span>
+                            <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Città, Via, Civico">
+                        </div>
                     </div>
                     
-                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline tracking-tight">+ Aggiungi tappa intermedia</button>
+                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline tracking-tight">+ Aggiungi tappa successiva</button>
                     
-                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 mt-2">
-                        🌐 CALCOLA PERCORSO SU GOOGLE MAPS
+                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 mt-2 uppercase text-xs tracking-widest">
+                        🌐 Calcola Percorso su Maps
                     </button>
                 </div>
 
-                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 shadow-inner text-left">
-                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest">KM Totali (leggi su Google Maps):</label>
+                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 shadow-inner">
+                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest text-left">KM Totali (leggi su Google Maps):</label>
                     <div class="flex items-center gap-4 font-black">
                         <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzo()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none focus:ring-4 focus:ring-amber-200">
                         <span class="text-2xl text-amber-600">KM</span>
@@ -86,10 +93,39 @@
             </div>
 
             <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
-                <div class="space-y-2 mb-10">
+                <div class="space-y-2 mb-6 w-full">
                     <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Prezzo Totale</p>
                     <div id="totaleDisplay" class="text-8xl font-black text-slate-900 tracking-tighter">€ 0,00</div>
                     <div id="riepilogo-testo" class="text-xs font-bold text-red-600 uppercase tracking-tighter">Inserisci i KM per il calcolo</div>
+                </div>
+
+                <button onclick="toggleDettaglio()" class="no-print bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-slate-300 transition mb-6">
+                    🔍 Mostra Giustificativo Costi DGR
+                </button>
+
+                <div id="dettaglioCosti" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-3 mb-6 hidden animate-in slide-in-from-top-4 duration-300">
+                    <h4 class="text-xs font-black text-slate-800 uppercase border-b pb-2 mb-4 tracking-widest">Dettaglio Voci di Costo</h4>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 italic">Quota Fissa (Base):</span>
+                        <span id="det-fissa" class="font-bold text-slate-700">€ 0,00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500 italic">Quota Chilometrica:</span>
+                        <span id="det-km" class="font-bold text-slate-700">€ 0,00</span>
+                    </div>
+                    <div id="row-attesa" class="flex justify-between text-sm hidden">
+                        <span class="text-slate-500 italic">Indennità Fermo Macchina:</span>
+                        <span id="det-attesa" class="font-bold text-red-600">€ 0,00</span>
+                    </div>
+                    <div id="row-paziente2" class="flex justify-between text-sm hidden">
+                        <span class="text-slate-500 italic">Supplemento 2° Paziente:</span>
+                        <span id="det-paz2" class="font-bold text-red-600">€ 0,00</span>
+                    </div>
+                    <div class="pt-4 border-t flex justify-between font-black text-lg text-slate-900">
+                        <span>TOTALE:</span>
+                        <span id="det-totale">€ 0,00</span>
+                    </div>
+                    <p class="text-[8px] text-slate-400 leading-tight pt-2">Tariffe conformi alla D.G.R. XII/437 per il trasporto sanitario semplice non urgente.</p>
                 </div>
 
                 <div class="w-full max-w-xs space-y-3 no-print border-t pt-8">
@@ -97,7 +133,10 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase">2° Paziente Trasportato</label>
                         <input type="checkbox" id="paziente2" onchange="aggiornaPrezzo()" class="w-6 h-6 accent-red-600 cursor-pointer">
                     </div>
-                    <p class="text-[9px] text-slate-400 italic">Prezzo arrotondato alla seconda cifra decimale.</p>
+                </div>
+
+                <div class="mt-12 text-[9px] text-slate-300 font-bold uppercase tracking-[0.2em] max-w-xs leading-relaxed text-center">
+                    Software per uso interno • CRI Gallarate
                 </div>
             </div>
         </div>
@@ -112,24 +151,27 @@
 
         function aggiungiTappa() {
             const container = document.getElementById('container-tappe');
-            const input = document.createElement('input');
-            input.className = "tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100 mt-2";
-            input.placeholder = "Tappa intermedia...";
-            container.appendChild(input);
+            const numTappe = document.querySelectorAll('.tappa-input').length;
+            const div = document.createElement('div');
+            div.className = "flex flex-col mt-2";
+            div.innerHTML = `
+                <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa ${numTappe}</span>
+                <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-blue-100" placeholder="Città, Via, Civico">
+            `;
+            container.appendChild(div);
         }
 
         function apriGoogleMaps() {
             const inputs = document.querySelectorAll('.tappa-input');
             const locations = Array.from(inputs).map(i => encodeURIComponent(i.value)).filter(v => v !== "");
-            
-            if (locations.length < 2) {
-                alert("Inserisci almeno Partenza e Arrivo!");
-                return;
-            }
-
-            // Costruisce il link di Google Maps con l'itinerario completo
+            if (locations.length < 2) { alert("Inserisci almeno Partenza e Tappa 1!"); return; }
             const url = "https://www.google.com/maps/dir/" + locations.join("/");
             window.open(url, '_blank');
+        }
+
+        function toggleDettaglio() {
+            const box = document.getElementById('dettaglioCosti');
+            box.classList.toggle('hidden');
         }
 
         function aggiornaPrezzo() {
@@ -143,19 +185,47 @@
             const t = TARIFFE[m];
 
             // 1. Quota Fissa
-            let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.fGr : t.fissa);
+            let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.baseGr : t.fissa);
             
-            // 2. Attesa (Franchigia 60 o 90 min)
+            // 2. Calcolo KM
+            let costoKm = km * t.km;
+
+            // 3. Attesa (Franchigia 60 o 90 min)
             let soglia = (tip === 'ar') ? 90 : 60;
             let oreAttesa = Math.ceil(Math.max(0, attMin - soglia) / 60);
+            let costoAttesa = oreAttesa * t.att;
 
-            // 3. Calcolo Totale
-            let totale = base + (km * t.km) + (oreAttesa * t.att) + (p2 ? t.p2 : 0);
+            // 4. Supplemento 2° Paziente
+            let costoPaz2 = p2 ? t.p2 : 0;
 
-            // Arrotondamento a 2 decimali
+            // 5. Totale
+            let totale = base + costoKm + costoAttesa + costoPaz2;
             totale = Math.round((totale + Number.EPSILON) * 100) / 100;
 
-            document.getElementById('totaleDisplay').innerText = `€ ${totale.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            // --- AGGIORNAMENTO UI ---
+            const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            
+            document.getElementById('totaleDisplay').innerText = `€ ${fmt(totale)}`;
+            
+            // Aggiornamento Dettaglio Giustificativo
+            document.getElementById('det-fissa').innerText = `€ ${fmt(base)}`;
+            document.getElementById('det-km').innerText = `€ ${fmt(costoKm)}`;
+            document.getElementById('det-totale').innerText = `€ ${fmt(totale)}`;
+
+            // Gestione righe extra nel dettaglio
+            if(costoAttesa > 0) {
+                document.getElementById('row-attesa').classList.remove('hidden');
+                document.getElementById('det-attesa').innerText = `€ ${fmt(costoAttesa)}`;
+            } else {
+                document.getElementById('row-attesa').classList.add('hidden');
+            }
+
+            if(p2) {
+                document.getElementById('row-paziente2').classList.remove('hidden');
+                document.getElementById('det-paz2').innerText = `€ ${fmt(costoPaz2)}`;
+            } else {
+                document.getElementById('row-paziente2').classList.add('hidden');
+            }
             
             if(km > 0) {
                 document.getElementById('riepilogo-testo').innerText = `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra`;
