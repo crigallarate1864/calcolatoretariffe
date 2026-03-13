@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preventivatore CRI Gallarate</title>
+    <title>CRI Gallarate Route Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print { .no-print { display: none; } body { background: white; } }
@@ -16,7 +16,7 @@
     <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
         <div class="bg-red-600 p-6 text-white flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-black uppercase tracking-tight text-left">Preventivatore Trasporti 🚑</h1>
+                <h1 class="text-2xl font-black uppercase tracking-tight text-left italic">CRI Gallarate Route Master 🚑</h1>
                 <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest text-left">D.G.R. XII/437 • Trasparenza Costi • Google Maps</p>
             </div>
             <button onclick="window.print()" class="no-print bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs uppercase shadow-lg hover:bg-gray-100 transition">Salva PDF</button>
@@ -125,10 +125,9 @@
                         <span>TOTALE:</span>
                         <span id="det-totale">€ 0,00</span>
                     </div>
-                    <p class="text-[8px] text-slate-400 leading-tight pt-2">Tariffe conformi alla D.G.R. XII/437 per il trasporto sanitario semplice non urgente.</p>
                 </div>
 
-                <div class="w-full max-w-xs space-y-3 no-print border-t pt-8">
+                <div class="w-full max-w-xs space-y-3 no-print border-t pt-8 text-left">
                     <div class="flex justify-between items-center bg-white p-3 rounded-xl border">
                         <label class="text-[10px] font-bold text-slate-500 uppercase">2° Paziente Trasportato</label>
                         <input type="checkbox" id="paziente2" onchange="aggiornaPrezzo()" class="w-6 h-6 accent-red-600 cursor-pointer">
@@ -136,7 +135,7 @@
                 </div>
 
                 <div class="mt-12 text-[9px] text-slate-300 font-bold uppercase tracking-[0.2em] max-w-xs leading-relaxed text-center">
-                    Software per uso interno • CRI Gallarate
+                    Software per uso interno • CRI Gallarate Route Master
                 </div>
             </div>
         </div>
@@ -170,8 +169,7 @@
         }
 
         function toggleDettaglio() {
-            const box = document.getElementById('dettaglioCosti');
-            box.classList.toggle('hidden');
+            document.getElementById('dettaglioCosti').classList.toggle('hidden');
         }
 
         function aggiornaPrezzo() {
@@ -184,54 +182,33 @@
 
             const t = TARIFFE[m];
 
-            // 1. Quota Fissa
             let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.baseGr : t.fissa);
-            
-            // 2. Calcolo KM
             let costoKm = km * t.km;
-
-            // 3. Attesa (Franchigia 60 o 90 min)
             let soglia = (tip === 'ar') ? 90 : 60;
             let oreAttesa = Math.ceil(Math.max(0, attMin - soglia) / 60);
             let costoAttesa = oreAttesa * t.att;
-
-            // 4. Supplemento 2° Paziente
             let costoPaz2 = p2 ? t.p2 : 0;
 
-            // 5. Totale
             let totale = base + costoKm + costoAttesa + costoPaz2;
             totale = Math.round((totale + Number.EPSILON) * 100) / 100;
 
-            // --- AGGIORNAMENTO UI ---
             const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            
             document.getElementById('totaleDisplay').innerText = `€ ${fmt(totale)}`;
-            
-            // Aggiornamento Dettaglio Giustificativo
             document.getElementById('det-fissa').innerText = `€ ${fmt(base)}`;
             document.getElementById('det-km').innerText = `€ ${fmt(costoKm)}`;
             document.getElementById('det-totale').innerText = `€ ${fmt(totale)}`;
 
-            // Gestione righe extra nel dettaglio
             if(costoAttesa > 0) {
                 document.getElementById('row-attesa').classList.remove('hidden');
                 document.getElementById('det-attesa').innerText = `€ ${fmt(costoAttesa)}`;
-            } else {
-                document.getElementById('row-attesa').classList.add('hidden');
-            }
+            } else { document.getElementById('row-attesa').classList.add('hidden'); }
 
             if(p2) {
                 document.getElementById('row-paziente2').classList.remove('hidden');
                 document.getElementById('det-paz2').innerText = `€ ${fmt(costoPaz2)}`;
-            } else {
-                document.getElementById('row-paziente2').classList.add('hidden');
-            }
+            } else { document.getElementById('row-paziente2').classList.add('hidden'); }
             
-            if(km > 0) {
-                document.getElementById('riepilogo-testo').innerText = `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra`;
-            } else {
-                document.getElementById('riepilogo-testo').innerText = "Inserisci i KM per il calcolo";
-            }
+            document.getElementById('riepilogo-testo').innerText = km > 0 ? `${km.toFixed(1)} KM • ${oreAttesa} Ore Attesa Extra` : "Inserisci i KM per il calcolo";
         }
     </script>
 </body>
