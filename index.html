@@ -15,36 +15,36 @@
 
     <div id="home-screen" class="max-w-4xl mx-auto space-y-8 mt-10 md:mt-20">
         <div class="text-center space-y-4">
-            <h1 class="text-4xl font-black uppercase italic tracking-tighter text-center">CRI Gallarate Omnia 🚑</h1>
+            <h1 class="text-4xl font-black uppercase italic tracking-tighter text-center text-slate-800">CRI Gallarate Omnia 🚑</h1>
             <p class="text-slate-500 font-bold uppercase tracking-widest text-sm text-center">Gestione Integrata Tariffe e Servizi</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button onclick="mostraModulo('secondari')" class="bg-white p-10 rounded-3xl shadow-xl border-2 border-transparent hover:border-red-600 transition-all group">
                 <div class="text-5xl mb-4 group-hover:scale-110 transition text-center">🏥</div>
                 <h2 class="text-xl font-black uppercase text-center">Trasporti Secondari</h2>
-                <p class="text-slate-400 text-xs mt-2 italic text-center">DGR XII/437 • Urbano/Extraurbano</p>
+                <p class="text-slate-400 text-xs mt-2 italic text-center">DGR XII/437 • Calcolo km Colonna F</p>
             </button>
             <button onclick="mostraModulo('eventi')" class="bg-white p-10 rounded-3xl shadow-xl border-2 border-transparent hover:border-blue-600 transition-all group">
                 <div class="text-5xl mb-4 group-hover:scale-110 transition text-center">🏃‍♂️</div>
                 <h2 class="text-xl font-black uppercase text-center text-center">Eventi e Manifestazioni</h2>
-                <p class="text-slate-400 text-xs mt-2 italic text-center text-center">Gare sportive, concerti, presidi</p>
+                <p class="text-slate-400 text-xs mt-2 italic text-center text-center text-center">Gare sportive, concerti, presidi</p>
             </button>
         </div>
     </div>
 
-    <div id="modulo-secondari" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden">
-        <div class="bg-red-600 p-6 text-white flex justify-between items-center">
+    <div id="modulo-secondari" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden text-left">
+        <div class="bg-red-600 p-6 text-white flex justify-between items-center text-left">
             <button onclick="tornaHome()" class="no-print bg-white/20 hover:bg-white/30 p-2 rounded-lg text-xs font-bold uppercase">⬅ Home</button>
             <h1 class="text-xl font-black uppercase tracking-tight italic">Trasporti Secondari</h1>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 text-left">
             <div class="p-6 space-y-6 border-r border-gray-100 text-left">
                 <input type="text" id="nome-paziente" placeholder="Nome Paziente / N° Foglio Viaggio" class="w-full border-b p-2 text-sm outline-none focus:border-red-500 bg-gray-50 rounded-lg text-left">
                 
                 <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-left">
                     <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1 text-left">Mezzo</label>
+                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Mezzo</label>
                         <select id="mezzo" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b-2 border-slate-300 p-1 font-bold outline-none">
                             <option value="amb">Ambulanza (2 Op.)</option>
                             <option value="pul">Furgone Disabili</option>
@@ -55,88 +55,81 @@
                     <div>
                         <label class="text-[10px] font-black text-red-600 uppercase block mb-1 leading-tight text-left">Comune di DESTINAZIONE</label>
                         <select id="ambito" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-sm outline-none font-medium text-left">
-                            <option value="piccolo">Sotto 150.000 abitanti (15km incl.)</option>
-                            <option value="grande">Sopra 150.000 abitanti (Urbano)</option>
+                            <option value="piccolo">Sotto 150.000 abitanti (Gallarate e limitrofi)</option>
+                            <option value="grande">Sopra 150.000 abitanti (Grandi Città)</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
+                        <div class="text-left">
                             <label class="text-[10px] font-black text-slate-400 uppercase block mb-1 text-left">Servizio</label>
-                            <select id="tipoViaggio" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-left text-left">
+                            <select id="tipoViaggio" onchange="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-left">
                                 <option value="singola">Sola Andata</option>
                                 <option value="ar">Andata e Ritorno</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="text-left">
                             <label class="text-[10px] font-black text-slate-400 uppercase block mb-1 text-left">Attesa (Min.)</label>
-                            <input type="number" id="attesa" value="0" oninput="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-red-600" placeholder="Minuti">
+                            <input type="number" id="attesa" value="0" oninput="aggiornaPrezzoSecondari()" class="w-full bg-transparent border-b border-slate-300 p-1 text-xs outline-none font-bold text-red-600 text-left">
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-3 text-left">
                     <div id="container-tappe" class="space-y-2 text-left">
-                        <div class="flex flex-col">
+                        <div class="flex flex-col text-left">
                             <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase">Partenza</span>
                             <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm" placeholder="es: CRI Gallarate">
                         </div>
-                        <div class="flex flex-col">
+                        <div class="flex flex-col text-left">
                             <span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa 1</span>
                             <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm" placeholder="Indirizzo Destinazione">
                         </div>
                     </div>
-                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline">+ Aggiungi tappa</button>
-                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition uppercase text-xs">🌐 Calcola Percorso su Maps</button>
+                    <button onclick="aggiungiTappa()" class="no-print text-red-600 text-[10px] font-bold uppercase hover:underline tracking-tight">+ Aggiungi tappa</button>
+                    <button onclick="apriGoogleMaps()" class="no-print w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition uppercase text-xs">🌐 Calcola su Google Maps</button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 no-print">
-                    <div class="bg-white p-4 rounded-2xl border-2 border-slate-200">
-                        <label class="block text-[9px] font-black text-slate-400 uppercase mb-1 text-left text-left">KM Urbani (Gallarate)</label>
-                        <input type="number" id="km-urbani" value="0" step="0.1" oninput="aggiornaPrezzoSecondari()" class="w-full text-2xl font-black text-center outline-none">
-                    </div>
-                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
-                        <label class="block text-[9px] font-black text-amber-600 uppercase mb-1 text-left text-left">KM Extraurbani</label>
-                        <input type="number" id="km-extra" value="0" step="0.1" oninput="aggiornaPrezzoSecondari()" class="w-full text-2xl font-black text-center outline-none bg-transparent">
-                    </div>
+                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200 shadow-inner text-left">
+                    <label class="block text-[10px] font-black text-amber-600 uppercase mb-2 tracking-widest text-left">KM Totali (da Google Maps):</label>
+                    <input type="number" id="km-input" value="0" step="0.1" oninput="aggiornaPrezzoSecondari()" class="w-full bg-white border-2 border-amber-400 p-4 rounded-2xl text-4xl text-center outline-none focus:ring-4 focus:ring-amber-200 font-black">
                 </div>
             </div>
 
             <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2 text-center text-center">Prezzo Totale Arrotondato</p>
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2 text-center">Prezzo Totale Arrotondato</p>
                 <div id="totaleDisplay" class="text-8xl font-black text-slate-900 tracking-tighter mb-4 text-center">€ 0,00</div>
-                <button onclick="toggleDettaglio('dettaglioSecondari')" class="no-print bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-bold uppercase mb-6 text-center">🔍 Giustificativo Costi DGR</button>
+                <button onclick="toggleDettaglio('dettaglioSecondari')" class="no-print bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-bold uppercase mb-6 text-center">🔍 Giustificativo DGR XII/437</button>
                 
-                <div id="dettaglioSecondari" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-3 hidden">
-                    <h4 class="text-xs font-black uppercase border-b pb-2 mb-4 tracking-widest text-center text-slate-800">Dettaglio Voci</h4>
+                <div id="dettaglioSecondari" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-3 hidden animate-in slide-in-from-top-4 duration-200">
+                    <h4 class="text-xs font-black uppercase border-b pb-2 mb-4 tracking-widest text-center text-slate-800">Scomposizione Costi</h4>
                     <div class="flex justify-between text-sm"><span>Quota Fissa (Base):</span><span id="det-fissa-s" class="font-bold">€ 0,00</span></div>
-                    <div class="flex justify-between text-sm"><span>KM Urbani (Gallarate):</span><span id="det-km-u-s" class="font-bold">€ 0,00</span></div>
-                    <div class="flex justify-between text-sm text-amber-600"><span>KM Extraurbani:</span><span id="det-km-e-s" class="font-bold">€ 0,00</span></div>
+                    <div class="flex justify-between text-sm text-amber-600"><span>KM Extraurbani (Colonna F):</span><span id="det-km-e-s" class="font-bold">€ 0,00</span></div>
                     <div id="row-attesa-s" class="flex justify-between text-sm hidden"><span>Indennità Attesa Extra:</span><span id="det-attesa-s" class="font-bold text-red-600">€ 0,00</span></div>
                     <div id="row-p2-s" class="flex justify-between text-sm hidden"><span>Supplemento 2° Paziente:</span><span id="det-p2-s" class="font-bold text-red-600">€ 0,00</span></div>
-                    <p id="nota-km-esenzione" class="text-[9px] text-blue-600 italic hidden text-center">Franchigia 15km applicata sul totale (priorità km urbani).</p>
+                    <p id="nota-km-esenzione" class="text-[9px] text-blue-600 italic hidden text-center pt-2">Franchigia 15km inclusa. 1km sottratto come confine urbano.</p>
                 </div>
 
                 <div class="flex items-center gap-2 no-print mt-4 text-center">
                     <input type="checkbox" id="paziente2" onchange="aggiornaPrezzoSecondari()" class="w-6 h-6 accent-red-600 cursor-pointer text-center">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase text-center text-center text-center">2° Paziente</label>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase text-center">2° Paziente Trasportato</label>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modulo-eventi" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden">
-        <div class="bg-blue-600 p-6 text-white flex justify-between items-center text-center">
+    <div id="modulo-eventi" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 hidden text-left">
+        <div class="bg-blue-600 p-6 text-white flex justify-between items-center text-left">
             <button onclick="tornaHome()" class="no-print bg-white/20 hover:bg-white/30 p-2 rounded-lg text-xs font-bold uppercase">⬅ Home</button>
             <h1 class="text-xl font-black uppercase tracking-tight italic">Eventi e Manifestazioni</h1>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 text-left">
-            <div class="p-6 space-y-6 border-r border-gray-100"><div id="container-eventi" class="space-y-4 text-left"></div><button onclick="aggiungiEquipaggio()" class="no-print text-blue-600 text-[10px] font-bold uppercase hover:underline">+ Aggiungi Mezzo/Equipaggio</button></div>
-            <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center text-center">
+            <div class="p-6 space-y-6 border-r border-gray-100 text-left"><div id="container-eventi" class="space-y-4 text-left"></div><button onclick="aggiungiEquipaggio()" class="no-print text-blue-600 text-[10px] font-bold uppercase hover:underline text-left">+ Aggiungi Mezzo/Equipaggio</button></div>
+            <div class="p-6 bg-slate-50 flex flex-col justify-center items-center text-center">
                 <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2 text-center text-center">Preventivo Manifestazione</p>
                 <div id="totaleEventiDisplay" class="text-8xl font-black text-slate-900 tracking-tighter mb-6 text-center text-center">€ 0,00</div>
-                <div id="dettaglioEventi" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-4 text-center">
-                    <h4 class="text-xs font-black uppercase border-b pb-2 tracking-widest text-slate-800 text-center text-center">Riepilogo Mezzi</h4>
+                <div id="dettaglioEventi" class="w-full max-w-md bg-white border-2 border-slate-200 rounded-2xl p-6 text-left space-y-4 text-center text-center">
+                    <h4 class="text-xs font-black uppercase border-b pb-2 tracking-widest text-center text-slate-800">Riepilogo Mezzi</h4>
                     <div id="lista-voci-eventi" class="space-y-2 text-sm text-left"></div>
                     <div class="pt-4 border-t flex justify-between font-black text-xl text-slate-900 uppercase"><span>Totale:</span><span id="det-totale-e">€ 0,00</span></div>
                 </div>
@@ -146,11 +139,11 @@
     </div>
 
     <script>
-        // TARIFFE AGGIORNATE DGR XII/437 (Base + Extraurbano al KM)
+        // TARIFFE ESTRATTE DIRETTAMENTE DALLA COLONNA F DEL FILE EXCEL
         const TARIFFE_S = {
-            amb: { fissa: 54.74, fGr: 58.31, ar: 120.19, arGr: 128.52, km: 1.13, kmExt: 1.37, p2: 16.66, att: 41.65 },
-            pul: { fissa: 49.98, fGr: 49.98, ar: 116.62, arGr: 110.67, km: 0.95, kmExt: 1.19, p2: 14.28, att: 41.65 },
-            aut: { fissa: 28.56, fGr: 28.56, ar: 63.07, arGr: 63.07, km: 0.60, kmExt: 0.71, p2: 11.90, att: 20.23 }
+            amb: { fissa: 54.74, fGr: 58.31, ar: 120.19, arGr: 128.52, kmExt: 1.13, p2: 16.66, att: 41.65 },
+            pul: { fissa: 49.98, fGr: 49.98, ar: 116.62, arGr: 110.67, kmExt: 0.95, p2: 14.28, att: 41.65 },
+            aut: { fissa: 28.56, fGr: 28.56, ar: 63.07, arGr: 63.07, kmExt: 0.60, p2: 11.90, att: 20.23 }
         };
 
         const TARIFFE_E = {
@@ -177,7 +170,7 @@
             const num = document.querySelectorAll('.tappa-input').length;
             const div = document.createElement('div');
             div.className = "flex flex-col mt-2 text-left";
-            div.innerHTML = `<span class="text-[9px] font-bold text-slate-400 ml-1 uppercase">Tappa ${num}</span>
+            div.innerHTML = `<span class="text-[9px] font-bold text-slate-400 ml-1 uppercase text-left">Tappa ${num}</span>
                              <input type="text" class="tappa-input w-full p-3 border rounded-xl text-sm" placeholder="Indirizzo">`;
             container.appendChild(div);
         }
@@ -193,52 +186,39 @@
             const m = document.getElementById('mezzo').value;
             const amb = document.getElementById('ambito').value;
             const tip = document.getElementById('tipoViaggio').value;
-            const kmU = parseFloat(document.getElementById('km-urbani').value) || 0;
-            const kmE = parseFloat(document.getElementById('km-extra').value) || 0;
+            const kmTotali = parseFloat(document.getElementById('km-input').value) || 0;
             const attMin = parseInt(document.getElementById('attesa').value) || 0;
             const p2 = document.getElementById('paziente2').checked;
 
             const t = TARIFFE_S[m];
             let base = (tip === 'ar') ? (amb === 'grande' ? t.arGr : t.ar) : (amb === 'grande' ? t.fGr : t.fissa);
             
-            // LOGICA KM (Urbano vs Extraurbano + Franchigia)
-            let kmTotali = kmU + kmE;
-            let kmDaPagare = kmTotali;
-            let kmUrbPaganti = 0;
-            let kmExtPaganti = 0;
+            let kmPagantiExt = 0;
 
             if (amb === 'piccolo') {
-                kmDaPagare = Math.max(0, kmTotali - 15);
-                document.getElementById('nota-km-esenzione').classList.remove('hidden');
-                
-                // La franchigia mangia prima i km urbani (Gallarate)
-                if (kmTotali > kmDaPagare) {
-                    let franchigiaResidua = 15;
-                    kmUrbPaganti = Math.max(0, kmU - franchigiaResidua);
-                    franchigiaResidua = Math.max(0, franchigiaResidua - kmU);
-                    kmExtPaganti = Math.max(0, kmE - franchigiaResidua);
+                // LOGICA FORFETTARIA RICHIESTA: 
+                // 15km inclusi. Se KM > 15, togliamo 1km di confine urbano.
+                if (kmTotali > 15) {
+                    kmPagantiExt = Math.max(0, kmTotali - 15 - 1);
                 }
+                document.getElementById('nota-km-esenzione').classList.remove('hidden');
             } else {
-                // Città grande: tutti i km extraurbani (fuori città) si pagano
+                // Città grande: usiamo direttamente la tariffa km del file
+                kmPagantiExt = kmTotali;
                 document.getElementById('nota-km-esenzione').classList.add('hidden');
-                kmUrbPaganti = kmU;
-                kmExtPaganti = kmE;
             }
 
-            let costoKmU = kmUrbPaganti * t.km;
-            let costoKmE = kmExtPaganti * t.kmExt;
-
+            let costoKmE = kmPagantiExt * t.kmExt;
             let oreAtt = Math.ceil(Math.max(0, attMin - (tip === 'ar' ? 90 : 60)) / 60);
             let cPaz2 = p2 ? t.p2 : 0;
             let cAttesa = oreAtt * t.att;
             
-            let totale = base + costoKmU + costoKmE + cAttesa + cPaz2;
+            let totale = base + costoKmE + cAttesa + cPaz2;
             totale = Math.round((totale + Number.EPSILON) * 100) / 100;
 
             const fmt = (v) => v.toLocaleString('it-IT', {minimumFractionDigits: 2});
             document.getElementById('totaleDisplay').innerText = `€ ${fmt(totale)}`;
             document.getElementById('det-fissa-s').innerText = `€ ${fmt(base)}`;
-            document.getElementById('det-km-u-s').innerText = `€ ${fmt(costoKmU)}`;
             document.getElementById('det-km-e-s').innerText = `€ ${fmt(costoKmE)}`;
             
             if(cAttesa > 0) {
@@ -250,6 +230,8 @@
                 document.getElementById('row-p2-s').classList.remove('hidden');
                 document.getElementById('det-p2-s').innerText = `€ ${fmt(cPaz2)}`;
             } else document.getElementById('row-p2-s').classList.add('hidden');
+
+            document.getElementById('riepilogo-testo').innerText = kmTotali > 0 ? `${kmTotali.toFixed(1)} KM rilevati` : "Inserisci i KM per il calcolo";
         }
 
         function toggleDettaglio(id) { document.getElementById(id).classList.toggle('hidden'); }
@@ -257,8 +239,8 @@
         function aggiungiEquipaggio() {
             const container = document.getElementById('container-eventi');
             const div = document.createElement('div');
-            div.className = "equipaggio-row bg-white p-4 rounded-2xl border border-blue-100 shadow-sm space-y-3 relative text-left text-left";
-            div.innerHTML = `<div class="flex justify-between items-center border-b pb-2"><select onchange="calcolaEventi()" class="tipo-e font-bold text-blue-600 bg-transparent outline-none uppercase text-xs"><option value="ambulanza">🚑 Ambulanza</option><option value="appiedato">🚶‍♂️ Squadra Appiedata</option></select><button onclick="this.parentElement.parentElement.remove(); calcolaEventi();" class="text-slate-300 hover:text-red-500">✕</button></div><div class="grid grid-cols-3 gap-2"><div><label class="text-[9px] uppercase font-bold text-slate-400">Qty</label><input type="number" value="1" min="1" oninput="calcolaEventi()" class="qty-e w-full border-b p-1 font-bold text-center"></div><div><label class="text-[9px] uppercase font-bold text-slate-400 text-center">Ore</label><input type="number" value="1" min="0" oninput="calcolaEventi()" class="h-e w-full border-b p-1 font-bold text-center text-center"></div><div><label class="text-[9px] uppercase font-bold text-slate-400 text-center text-center">Min</label><select onchange="calcolaEventi()" class="m-e w-full border-b p-1 font-bold text-center bg-transparent"><option value="0">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>`;
+            div.className = "equipaggio-row bg-white p-4 rounded-2xl border border-blue-100 shadow-sm space-y-3 relative text-left";
+            div.innerHTML = `<div class="flex justify-between items-center border-b pb-2"><select onchange="calcolaEventi()" class="tipo-e font-bold text-blue-600 bg-transparent outline-none uppercase text-xs text-left"><option value="ambulanza">🚑 Ambulanza</option><option value="appiedato">🚶‍♂️ Squadra Appiedata</option></select><button onclick="this.parentElement.parentElement.remove(); calcolaEventi();" class="text-slate-300 hover:text-red-500">✕</button></div><div class="grid grid-cols-3 gap-2"><div><label class="text-[9px] uppercase font-bold text-slate-400">Qty</label><input type="number" value="1" min="1" oninput="calcolaEventi()" class="qty-e w-full border-b p-1 font-bold text-center"></div><div><label class="text-[9px] uppercase font-bold text-slate-400 text-center">Ore</label><input type="number" value="1" min="0" oninput="calcolaEventi()" class="h-e w-full border-b p-1 font-bold text-center"></div><div><label class="text-[9px] uppercase font-bold text-slate-400 text-center text-center">Min</label><select onchange="calcolaEventi()" class="m-e w-full border-b p-1 font-bold text-center bg-transparent"><option value="0">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>`;
             container.appendChild(div);
             calcolaEventi();
         }
@@ -282,5 +264,8 @@
             document.getElementById('det-totale-e').innerText = `€ ${fmt(totale)}`;
         }
     </script>
+    <footer class="mt-10 mb-10 text-center no-print">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] text-center">CRI Gallarate Omnia • Software Interno</p>
+    </footer>
 </body>
 </html>
